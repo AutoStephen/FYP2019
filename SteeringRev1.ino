@@ -1,50 +1,51 @@
 // TWO POTENTIOMETER INPUTS AND TWO PWM OUTPUTS
 
- int PotValue0;
- int PotValue5;
- int LeftMotor = 9; //motor on pin 9
- int RightMotor = 6; //motor on pin 6
- int Throttle; //value from one potentiometer times conversion factor
- int Steering; //value from the other potentiometer times conversion factor
- int SteeringVariable;
- int LeftSignal;
- int RightSignal;
+ int PotValue0; //Variable for storing the value from the throttle potentiometer.
+ int PotValue5; //Variable for storing the value from the steering potentiometer.
+ int LeftMotor = 3; //Motor on pin 3
+ int RightMotor = 5; //Motor on pin 5
+ int Throttle; //Value from one potentiometer times conversion factor
+ int Steering; //Value from the other potentiometer times conversion factor
+ int SteeringVariable; //Variable stored purely for calculations.
+ int LeftSignal; //Variable that is ultimately sent to the left motor.
+ int RightSignal; //Variable that is ultimately sent to the right motor.
 
  
 void setup() {
 
-  Serial.begin(9600); //start communication to read signal
+  Serial.begin(9600); //Start communication to read signal.
 }
 
 void loop() {
 
-  PotValue0 = analogRead(A0); // signal from pot that represents the throttle
-  PotValue5 = analogRead(A5); // signal from pot that represents the steering
+  PotValue0 = analogRead(A0); // Extract information from throttle pot.
+  PotValue5 = analogRead(A5); // Extract information from steering pot.
 
-  Throttle = PotValue0 * (255.0/1023.0); //Conversion Factor or simply divide by 4.
-  Steering = PotValue5 * (255.0/1023.0);
+  Throttle = PotValue0 / 4; //Dividing by 4 brings the signal into the required 0-255 range.
+  Steering = PotValue5 / 4;
 
 
 
-  SteeringVariable = 127.5 - Steering; //17.5 is the neutral value. subtracting the pot's position will give the amount of change from the neutral position. 
+  SteeringVariable = Steering;
 
-  if (SteeringVariable <0) { //car is turning right
-     LeftSignal = Throttle + SteeringVariable;
-     RightSignal = Throttle - SteeringVariable;
-  }
+  if (SteeringVariable <128) { //Car is turning left. Therefor the signal will be from 0 to 128. 
+     LeftSignal = Throttle + (128 - SteeringVariable); // Left motor is increased by the difference from the mid point. 
+     RightSignal = Throttle - (128 -SteeringVariable); // Right motor is decreased by the difference from the mid point.
+  } // This will produce a signal proportional to the amount turned.
 
-  if (SteeringVariable >0) { //car is turning left
-     LeftSignal = Throttle + SteeringVariable;
-     RightSignal = Throttle - SteeringVariable;
-  }
+ if (SteeringVariable >128) { //Car is turning right. Therefor the signal will be from 128 to 255. 
+   LeftSignal = Throttle - (SteeringVariable - 128); //Left motor is decreased by how far past the mid point the steering is.
+   RightSignal = Throttle + (SteeringVariable - 128); //Right motor is increased by how far past the mid point the steering is.
+ } // This will produce a signal proportional to the amount turned.
 
   
   
   analogWrite(LeftMotor, LeftSignal); //signal going to motors
   analogWrite(RightMotor, RightSignal);
 
-  
-  Serial.print("Throttle "); //print value from the potentiometers
+
+  //Print values on the Serial Monitor.
+  Serial.print("Throttle "); 
   Serial.print(Throttle); 
   Serial.print("  ");
   Serial.print("Steering ");
