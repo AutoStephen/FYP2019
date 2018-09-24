@@ -1,0 +1,15 @@
+Stephen,
+As your document says, 
+Fundamentally, this 0-1023 range is converted to 0-255 ( by multiplying by the conversion factor 255/1023) and sent to the motors. 
+That is the same as saying that we divide by 4.
+In my office last week, we imnplemented divid-by-four using noeht erfloating-point division, not integer division, but by shifting the binary value two places to the right.
+So a value in the range 0 to 1023 would be a value in the range 0000:0000 to 0011:1111:1111
+SHift that right by two places, we divide by four. that becomes
+0000:0000 to 1111:1111 (or 0 to 255)
+So, to convert the analog voltage on one of the Ax pins, we shift right by  2 places
+Steeering = AnalogRead(A0) // Read the steering position
+Steering = Steering >> 2; // divide it by 4
+If we wanted to write thjat to something, we could do AnalogWrite(Steering) to one of the PWM pins.
+Bu, in that case, ewr con't be sending it straight to a pin.
+In the case of the throttle, it is a lot easier, because, by dfefault, we will be sending that to the motors.
+In the fist instance, the moptors will both be sent the same PWM value, later we need to look at differential steering etc.
