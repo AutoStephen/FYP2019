@@ -3,3 +3,5 @@ This a text file for testing.
 Additional text 0. 
 
 This text has been added locally on my pc.
+
+And if I modify this on the web, how do you synchronize it with your PC copy? 
