@@ -1,3 +1,5 @@
+//*** 28-11-2018 - PROGRAMME WORKING - MOTOR SPEED DEPENDS ON POTENTIOMETER INPUT. ***
+// UPDATED TO WORK ON SOFT SERIAL PINS SO I CAN STILL USE SERIAL MONITOR FOR DIAGNOSTICS
 #include <Arduino.h> //Include additional Arduino Libraries.
 #include <SoftwareSerial.h> //Include software serial library for shield.
 
@@ -18,6 +20,7 @@ Serial.println("s"); //Show in monitor for diagnostics.
 ////////////////////////////////////////////////////////////////////////////////////////
 void loop() {
 
+//Convert the throttle input to a range 0-100.
 ThrottleInput = analogRead(A0); //Value from potentiometer placed into "ThrottleInput".
 ThrottlePercent = ((ThrottleInput / 1023.00) * 100.00); //Throttle value converted to %.
 
@@ -26,29 +29,23 @@ ThrottlePercent = ((ThrottleInput / 1023.00) * 100.00); //Throttle value convert
 Serial.println("s"); //Ensure controller is in Serial Mode
 mySerial.println("s");
 
-if (ThrottlePercent < 5.00) {
+if (ThrottlePercent < 2.00) {
   //Serial.println("s");
-  Serial.println("0"); //Turn the motor off when switched to software pins.
-  mySerial.println("0"); //Turn the motor off when the shield is looking at hardware pins.
+  mySerial.println("0"); //Turn the motor off when switched to software pins.
+  Serial.println("0"); //Turn the motor off when the shield is looking at hardware pins.
 }
-if (ThrottlePercent > 20.00 && ThrottlePercent <= 50.00) {
+if (ThrottlePercent > 5.00 && ThrottlePercent <= 10.00) {
   //Serial.println("s");
-  Serial.println("1f"); //Turn the motor at 20% when switched to software pins.
-  mySerial.println("0"); //Turn the motor off when the shield is looking at hardware pins.
+  mySerial.println("1f"); //Turn the motor at 10% when switched to software pins.
+  Serial.println("0"); //Turn the motor off when the shield is looking at hardware pins.
 }
-if (ThrottlePercent > 60.00 && ThrottlePercent <= 100.00) {
-  //Serial.println("s");
-  Serial.println("3f"); //Turn the motor at 40% when switched to software pins.
-  mySerial.println("0"); //Turn the motor off when the shield is looking at hardware pins.
-}
-
 
 //Print values to the serial monitor for diagnostics.
-//Serial.println(" Throttle Input = ");
-//Serial.println(ThrottleInput);
-//Serial.println(" Throttle Percentage = ");
-//Serial.println(ThrottlePercent);
-//Serial.println(" % ");
-//delay(50);  //Delay for stability.
+Serial.print(" Throttle Input = ");
+Serial.print(ThrottleInput);
+Serial.print(" Throttle Percentage = ");
+Serial.print(ThrottlePercent);
+Serial.println(" % ");
+delay(50);  //Delay for stability.
 
 }

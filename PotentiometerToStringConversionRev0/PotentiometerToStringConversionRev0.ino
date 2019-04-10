@@ -15,11 +15,6 @@ mySerial.begin(115200); //Baud rate between Arduino and Controller.
 mySerial.println("s"); //Initialise the controller to accept serial command strings.
 Serial.println("s"); //Show in monitor for diagnostics.
 
-// Place multiples of 10 into the IF statements. 
-for (ThrottleIncrement = 10.00; ThrottleIncrement <100.00; ThrottleIncrement =+ 10.00) {
-  
-}
-
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 void loop() {
